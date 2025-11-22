@@ -75407,7 +75407,7 @@ j.push(A.Je(new A.un(s.a,n.ga3N(),m),m,B.aE))
 j.push(A.bT(m,32,m))
 if(n.d.grS())j.push(n.Zi())
 l=A.c([A.dc(A.hn(A.Je(new A.bC(new A.ae(16,32,16,32),A.eA(j,B.aM,B.dm,B.b4),m),m,B.an),m,m),B.t,m,new A.c6(m,m,m,m,m,new A.fv(B.bj,B.d0,B.aS,l,m,m),B.af),m,m,m,m)],k)
-if(n.r)l.push(A.dc(A.hn(new A.EF(B.ce,new A.bC(B.Eh,A.eA(A.c([B.Bk,B.ys,B.SL,B.eW,B.SA],k),B.aM,B.a8,B.bp),m),m),m,m),B.t,B.I,m,m,m,m,m))
+if(n.r)l.push(A.dc(A.hn(new A.EF(B.ce,new A.bC(B.Eh,A.eA(A.c([B.Bk,B.ys,B.SK,B.eW,B.SA],k),B.aM,B.a8,B.bp),m),m),m,m),B.t,B.I,m,m,m,m,m))
 return A.apZ(A.ox(B.d_,l,B.S,B.cR))},
 Zr(){var s,r,q,p,o,n,m,l,k,j,i=this,h=null,g=i.d
 g===$&&A.a()
@@ -75470,7 +75470,7 @@ A.acz.prototype={
 $0(){return this.a.r=!1},
 $S:0}
 A.acD.prototype={
-$1(a){return A.ajR(A.c([A.z2(B.SD,new A.acC(a),null)],t.E),B.SR,B.SJ)},
+$1(a){return A.ajR(A.c([A.z2(B.SD,new A.acC(a),null)],t.E),B.SR,B.SI)},
 $S:99}
 A.acC.prototype={
 $0(){A.jA(this.a,!1).ahK(new A.acB())},
@@ -75735,7 +75735,7 @@ i=t.sq
 h=A.c([new A.cL(2,B.bP,B.cj.be(0.2),B.h,12)],i)
 g=A.cc("Host a Game",a0,a0,a0,A.bK(a0,a0,B.k,a0,a0,a0,a0,a0,a0,a0,a0,16,a0,a0,B.ax,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),a0,a0)
 f=A.bT(a0,12,a0)
-e=A.cc('1. Click "Create Offer"\n2. Share with another player\n3. Paste their answer to connect',a0,a0,a0,A.bK(a0,a0,B.fj,a0,a0,a0,a0,a0,a0,a0,a0,12,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),a0,a0)
+e=A.cc('1. Click "Create Game"\n2. Share with another player\n3. Paste their answer to connect',a0,a0,a0,A.bK(a0,a0,B.fj,a0,a0,a0,a0,a0,a0,a0,a0,12,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),a0,a0)
 d=A.bT(a0,12,a0)
 c=A.WR(a0,a0,B.cj.be(0.7),a0,a0,a0,a0,a0,a0,B.k,a0,a0,new A.ae(0,16,0,16),a0,a0,a0,a0,a0,a0,a0)
 k=A.dc(new A.bC(new A.ae(16,16,16,16),A.eA(A.c([g,f,e,d,A.akm(!1,A.cc(m,a0,a0,a0,a0,a0,a0),a0,a0,a0,a0,a0,a0,n,a0,c)],a6),B.by,B.a8,B.b4),a0),B.t,a0,new A.c6(a0,a0,j,l,h,new A.fv(B.bj,B.d0,B.aS,k,a0,a0),B.af),a0,a0,a0,a0)
@@ -75767,9 +75767,9 @@ $0(){return this.a.e=!1},
 $S:0}
 A.aed.prototype={
 $1(a){var s=this,r=null,q=A.ee(2),p=s.b,o=s.c,n=t.E
-p=A.Je(A.eA(A.c([B.SH,B.kK,A.dc(A.aq4(p,5,B.yT),B.t,r,new A.c6(B.ce,r,r,q,r,r,B.af),r,r,B.ej,r),B.eW,A.akn(B.nf,B.SM,new A.aea(p,a),A.WR(r,r,r,r,r,r,r,r,r,r,r,r,B.E9,r,r,r,r,r,r,r)),B.ys,B.DE,B.kK,B.SP,B.eW,A.aqo(o,A.akF(r,new A.fz(4,A.ee(2),B.iq),r,r,r,r,r,r,!0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,"Paste code here",!0,!0,r,r,r,r,r,r,r,r,r,r,r,r,r,r),1)],n),B.by,B.a8,B.bp),r,B.an)
+p=A.Je(A.eA(A.c([B.SG,B.kK,A.dc(A.aq4(p,5,B.yT),B.t,r,new A.c6(B.ce,r,r,q,r,r,B.af),r,r,B.ej,r),B.eW,A.akn(B.nf,B.SL,new A.aea(p,a),A.WR(r,r,r,r,r,r,r,r,r,r,r,r,B.E9,r,r,r,r,r,r,r)),B.ys,B.DE,B.kK,B.SO,B.eW,A.aqo(o,A.akF(r,new A.fz(4,A.ee(2),B.iq),r,r,r,r,r,r,!0,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,r,"Paste code here",!0,!0,r,r,r,r,r,r,r,r,r,r,r,r,r,r),1)],n),B.by,B.a8,B.bp),r,B.an)
 q=s.d
-return A.ajR(A.c([A.z2(B.SK,new A.aeb(q,a),r),A.akm(!1,B.SB,r,r,r,r,r,r,new A.aec(s.a,o,a,q),r,r)],n),p,B.SF)},
+return A.ajR(A.c([A.z2(B.SJ,new A.aeb(q,a),r),A.akm(!1,B.SB,r,r,r,r,r,r,new A.aec(s.a,o,a,q),r,r)],n),p,B.SQ)},
 $S:99}
 A.aea.prototype={
 $0(){A.pF(new A.ky(this.a))
@@ -75819,8 +75819,8 @@ $0(){return this.a.e=!1},
 $S:0}
 A.ae9.prototype={
 $1(a){var s=null,r=A.ee(2),q=this.b,p=t.E
-q=A.Je(A.eA(A.c([B.SC,B.kK,A.dc(A.aq4(q,5,B.yT),B.t,s,new A.c6(B.ce,s,s,r,s,s,B.af),s,s,B.ej,s),B.eW,A.akn(B.nf,B.SN,new A.ae7(q,a),s),B.Nr,B.SG],p),B.by,B.a8,B.bp),s,B.an)
-return A.ajR(A.c([A.akm(!1,B.SI,s,s,s,s,s,s,new A.ae8(this.a,a,this.c),s,s)],p),q,B.SQ)},
+q=A.Je(A.eA(A.c([B.SC,B.kK,A.dc(A.aq4(q,5,B.yT),B.t,s,new A.c6(B.ce,s,s,r,s,s,B.af),s,s,B.ej,s),B.eW,A.akn(B.nf,B.SM,new A.ae7(q,a),s),B.Nr,B.SF],p),B.by,B.a8,B.bp),s,B.an)
+return A.ajR(A.c([A.akm(!1,B.SH,s,s,s,s,s,s,new A.ae8(this.a,a,this.c),s,s)],p),q,B.SP)},
 $S:99}
 A.ae7.prototype={
 $0(){A.pF(new A.ky(this.a))
@@ -81578,8 +81578,8 @@ B.Nx=new A.iC(5,"timeout")
 B.Ny=new A.ra(null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.SE=new A.cZ("Code copied to clipboard",null,null,null,null,null,null,null,null)
 B.Nz=new A.lE(B.SE,null,null,null,null,null,null,null,null,null,null,null,null,B.eg,!1,null,null,null,B.S,null)
-B.SO=new A.cZ("Answer copied to clipboard",null,null,null,null,null,null,null,null)
-B.NA=new A.lE(B.SO,null,null,null,null,null,null,null,null,null,null,null,null,B.eg,!1,null,null,null,B.S,null)
+B.SN=new A.cZ("Answer copied to clipboard",null,null,null,null,null,null,null,null)
+B.NA=new A.lE(B.SN,null,null,null,null,null,null,null,null,null,null,null,null,B.eg,!1,null,null,null,B.S,null)
 B.yw=new A.yE(0,"permissive")
 B.NB=new A.yE(1,"normal")
 B.NC=new A.yE(2,"forced")
@@ -81942,19 +81942,19 @@ B.SA=new A.cZ("Establishing WebRTC connection",null,B.hS,null,null,null,null,nul
 B.SB=new A.cZ("Connect",null,null,null,null,null,null,null,null)
 B.SC=new A.cZ("Copy this answer and send it back to the host:",null,B.hS,null,null,null,null,null,null)
 B.SD=new A.cZ("Back to Menu",null,null,null,null,null,null,null,null)
-B.SF=new A.cZ("Share This Offer",null,null,null,null,null,null,null,null)
 B.PA=new A.k(!0,null,null,null,null,null,12,null,B.na,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.SG=new A.cZ("Connection will be established automatically.",null,B.PA,null,null,null,null,null,null)
-B.SH=new A.cZ("Copy this code and send it to the other player:",null,B.hS,null,null,null,null,null,null)
-B.SI=new A.cZ("Start Game",null,null,null,null,null,null,null,null)
-B.SJ=new A.cZ("Disconnected",null,null,null,null,null,null,null,null)
-B.SK=new A.cZ("Cancel",null,null,null,null,null,null,null,null)
+B.SF=new A.cZ("Connection will be established automatically.",null,B.PA,null,null,null,null,null,null)
+B.SG=new A.cZ("Copy this code and send it to the other player:",null,B.hS,null,null,null,null,null,null)
+B.SH=new A.cZ("Start Game",null,null,null,null,null,null,null,null)
+B.SI=new A.cZ("Disconnected",null,null,null,null,null,null,null,null)
+B.SJ=new A.cZ("Cancel",null,null,null,null,null,null,null,null)
 B.RM=new A.k(!0,null,null,null,null,null,20,B.ax,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.SL=new A.cZ("Waiting for Connection...",null,B.RM,null,null,null,null,null,null)
-B.SM=new A.cZ("Copy Code",null,null,null,null,null,null,null,null)
-B.SN=new A.cZ("Copy Answer",null,null,null,null,null,null,null,null)
-B.SP=new A.cZ("Paste the answer you receive:",null,B.hS,null,null,null,null,null,null)
-B.SQ=new A.cZ("Send This Answer",null,null,null,null,null,null,null,null)
+B.SK=new A.cZ("Waiting for Connection...",null,B.RM,null,null,null,null,null,null)
+B.SL=new A.cZ("Copy Code",null,null,null,null,null,null,null,null)
+B.SM=new A.cZ("Copy Answer",null,null,null,null,null,null,null,null)
+B.SO=new A.cZ("Paste the answer you receive:",null,B.hS,null,null,null,null,null,null)
+B.SP=new A.cZ("Send This Answer",null,null,null,null,null,null,null,null)
+B.SQ=new A.cZ("Share This Game",null,null,null,null,null,null,null,null)
 B.SR=new A.cZ("Opponent disconnected.",null,null,null,null,null,null,null,null)
 B.W3=new A.a8C(0,"system")
 B.Jw=new A.f(0.056,0.024)
