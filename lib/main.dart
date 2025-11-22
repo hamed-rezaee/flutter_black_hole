@@ -147,9 +147,31 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final isSmallScreen = screenSize.width < 500;
+    final isMediumScreen = screenSize.width < 800;
+
+    double spotSize = 45.0;
+
+    if (isSmallScreen) {
+      spotSize = 35.0;
+    } else if (isMediumScreen) {
+      spotSize = 40.0;
+    }
+
+    double verticalPadding = 32;
+    double horizontalPadding = 16;
+
+    if (isSmallScreen) {
+      verticalPadding = 16;
+      horizontalPadding = 8;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Black Hole'),
+        elevation: 4,
+        centerTitle: true,
         actions: [
           if (!_isRemoteGame)
             IconButton(
@@ -161,31 +183,70 @@ class _GameScreenState extends State<GameScreen> {
       ),
       body: Stack(
         children: [
-          Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (_isRemoteGame) ...[
-                    Text(
-                      'You are ${_localPlayer?.name.toUpperCase()}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                  _buildStatusDisplay(),
-                  const SizedBox(height: 32),
-                  BoardWidget(
-                    board: _engine.board,
-                    onSpotTap: _handleSpotTap,
-                    spotSize: 45.0,
-                  ),
-                  const SizedBox(height: 32),
-                  if (_engine.isGameOver) _buildGameOverDisplay(),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.grey[900]!.withValues(alpha: 0.5),
+                  Colors.black.withValues(alpha: 0.7),
                 ],
+              ),
+            ),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: horizontalPadding,
+                    vertical: verticalPadding,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (_isRemoteGame) ...[
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: _localPlayer == Player.red
+                                ? Colors.red.withValues(alpha: 0.2)
+                                : Colors.blue.withValues(alpha: 0.2),
+                            border: Border.all(
+                              color: _localPlayer == Player.red
+                                  ? Colors.red.withValues(alpha: 0.5)
+                                  : Colors.blue.withValues(alpha: 0.5),
+                            ),
+                          ),
+                          child: Text(
+                            'You are ${_localPlayer?.name.toUpperCase()}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: isSmallScreen ? 14 : 18,
+                              color: _localPlayer == Player.red
+                                  ? Colors.red[300]
+                                  : Colors.blue[300],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: verticalPadding),
+                      ],
+                      _buildStatusDisplay(isSmallScreen),
+                      SizedBox(height: verticalPadding),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: BoardWidget(
+                          board: _engine.board,
+                          onSpotTap: _handleSpotTap,
+                          spotSize: spotSize,
+                        ),
+                      ),
+                      SizedBox(height: verticalPadding),
+                      if (_engine.isGameOver)
+                        _buildGameOverDisplay(isSmallScreen),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -225,12 +286,12 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  Widget _buildStatusDisplay() {
+  Widget _buildStatusDisplay(bool isSmallScreen) {
     if (_engine.isGameOver) return const SizedBox.shrink();
 
     final playerColor = _engine.currentPlayer == Player.red
-        ? Colors.red
-        : Colors.blue;
+        ? const Color(0xFFFF5252)
+        : const Color(0xFF42A5F5);
     final nextVal = _engine.nextValue[_engine.currentPlayer];
 
     String statusText = 'Current Turn';
@@ -242,14 +303,39 @@ class _GameScreenState extends State<GameScreen> {
       }
     }
 
-    return Card(
-      color: Colors.grey[900],
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.grey[850]!.withValues(alpha: 0.8),
+            Colors.grey[900]!.withValues(alpha: 0.9),
+          ],
+        ),
+        border: Border.all(color: playerColor.withValues(alpha: 0.4), width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: playerColor.withValues(alpha: 0.3),
+            blurRadius: 15,
+            spreadRadius: 3,
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(isSmallScreen ? 12.0 : 16.0),
         child: Column(
           children: [
-            Text(statusText, style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
+            Text(
+              statusText,
+              style: TextStyle(
+                fontSize: isSmallScreen ? 12 : 14,
+                color: Colors.grey[400],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(height: isSmallScreen ? 6 : 8),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -258,13 +344,13 @@ class _GameScreenState extends State<GameScreen> {
                   style: TextStyle(
                     color: playerColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: 24,
+                    fontSize: isSmallScreen ? 18 : 24,
                   ),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: isSmallScreen ? 12 : 16),
                 PieceWidget(
                   piece: Piece(owner: _engine.currentPlayer, value: nextVal!),
-                  size: 40,
+                  size: isSmallScreen ? 30 : 40,
                 ),
               ],
             ),
@@ -274,7 +360,7 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  Widget _buildGameOverDisplay() {
+  Widget _buildGameOverDisplay(bool isSmallScreen) {
     final scores = _engine.calculateScores();
     final winner = _engine.getWinner();
 
@@ -286,36 +372,87 @@ class _GameScreenState extends State<GameScreen> {
       resultColor = Colors.white;
     } else {
       resultText = "${winner.name.toUpperCase()} Wins!";
-      resultColor = winner == Player.red ? Colors.red : Colors.blue;
+      resultColor = winner == Player.red
+          ? const Color(0xFFFF5252)
+          : const Color(0xFF42A5F5);
     }
 
-    return Card(
-      color: Colors.grey[900],
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.grey[850]!.withValues(alpha: 0.9),
+            Colors.grey[900]!.withValues(alpha: 1.0),
+          ],
+        ),
+        border: Border.all(color: resultColor.withValues(alpha: 0.5), width: 3),
+        boxShadow: [
+          BoxShadow(
+            color: resultColor.withValues(alpha: 0.4),
+            blurRadius: 20,
+            spreadRadius: 5,
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(isSmallScreen ? 16.0 : 24.0),
         child: Column(
           children: [
             Text(
               'GAME OVER',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              style: TextStyle(
+                fontSize: isSmallScreen ? 22 : 28,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
+                letterSpacing: 1.5,
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: isSmallScreen ? 12 : 16),
             Text(
               resultText,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              style: TextStyle(
+                fontSize: isSmallScreen ? 18 : 24,
                 color: resultColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16),
-            Text('Red Score: ${scores[Player.red]}'),
-            Text('Blue Score: ${scores[Player.blue]}'),
-            const SizedBox(height: 8),
-            const Text('(Lowest score wins)'),
-            const SizedBox(height: 24),
+            SizedBox(height: isSmallScreen ? 12 : 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.black.withValues(alpha: 0.3),
+              ),
+              child: Column(
+                children: [
+                  _buildScoreRow(
+                    'Red',
+                    scores[Player.red] ?? 0,
+                    const Color(0xFFFF5252),
+                    isSmallScreen,
+                  ),
+                  SizedBox(height: isSmallScreen ? 6 : 8),
+                  _buildScoreRow(
+                    'Blue',
+                    scores[Player.blue] ?? 0,
+                    const Color(0xFF42A5F5),
+                    isSmallScreen,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: isSmallScreen ? 8 : 12),
+            Text(
+              '(Lowest score wins)',
+              style: TextStyle(
+                fontSize: isSmallScreen ? 11 : 13,
+                color: Colors.grey[500],
+              ),
+            ),
+            SizedBox(height: isSmallScreen ? 16 : 24),
             ElevatedButton.icon(
               onPressed: () {
                 if (_isRemoteGame) {
@@ -327,15 +464,57 @@ class _GameScreenState extends State<GameScreen> {
               icon: Icon(_isRemoteGame ? Icons.exit_to_app : Icons.refresh),
               label: Text(_isRemoteGame ? 'Back to Menu' : 'Play Again'),
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 16,
+                padding: EdgeInsets.symmetric(
+                  horizontal: isSmallScreen ? 24 : 32,
+                  vertical: isSmallScreen ? 12 : 16,
                 ),
+                backgroundColor: resultColor.withValues(alpha: 0.8),
+                foregroundColor: Colors.white,
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildScoreRow(
+    String player,
+    int score,
+    Color color,
+    bool isSmallScreen,
+  ) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: color.withValues(alpha: 0.3),
+            border: Border.all(color: color, width: 2),
+          ),
+          child: Center(
+            child: Text(
+              score.toString(),
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.bold,
+                fontSize: isSmallScreen ? 14 : 16,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: isSmallScreen ? 8 : 12),
+        Text(
+          '$player Score',
+          style: TextStyle(
+            fontSize: isSmallScreen ? 13 : 15,
+            color: Colors.grey[300],
+          ),
+        ),
+      ],
     );
   }
 }

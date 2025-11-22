@@ -222,113 +222,369 @@ class _MenuScreenState extends State<MenuScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final isSmallScreen = screenSize.width < 500;
+    final isMediumScreen = screenSize.width < 800;
+
+    double maxWidth = 500;
+    if (isMediumScreen) {
+      maxWidth = 400;
+    }
+    if (isSmallScreen) {
+      maxWidth = double.infinity;
+    }
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Black Hole')),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 500),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ElevatedButton(
-                  onPressed: () => _startGame(),
-                  style: ElevatedButton.styleFrom(
+      appBar: AppBar(
+        title: const Text('Black Hole'),
+        elevation: 4,
+        centerTitle: true,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.grey[900]!.withValues(alpha: 0.5),
+              Colors.black.withValues(alpha: 0.7),
+            ],
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: maxWidth),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Title with icon
+                  Container(
                     padding: const EdgeInsets.all(20),
-                  ),
-                  child: const Text(
-                    'Local Play',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-                const SizedBox(height: 32),
-                const Divider(),
-                const SizedBox(height: 32),
-                const Text(
-                  'Network Play (WebRTC)',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Works on all platforms including web!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-                ),
-                const SizedBox(height: 24),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Text(
-                          'Host a Game',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          '1. Click "Create Offer"\n'
-                          '2. Share the offer with another player\n'
-                          '3. Paste their answer to connect',
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        const SizedBox(height: 12),
-                        ElevatedButton(
-                          onPressed: _isLoading ? null : _createOffer,
-                          child: const Text('Create Offer'),
-                        ),
-                      ],
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.deepPurple.withValues(alpha: 0.4),
+                          Colors.purple.withValues(alpha: 0.2),
+                        ],
+                      ),
+                      border: Border.all(
+                        color: Colors.purple.withValues(alpha: 0.3),
+                        width: 2,
+                      ),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Text(
-                          'Join a Game',
+                        Icon(
+                          Icons.dark_mode,
+                          size: isSmallScreen ? 48 : 64,
+                          color: Colors.purple[300],
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Black Hole',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: isSmallScreen ? 28 : 36,
                             fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 1.5,
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          '1. Paste the offer from the host\n'
-                          '2. Click "Join with Offer"\n'
-                          '3. Share the answer back to the host',
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        const SizedBox(height: 12),
-                        TextField(
-                          controller: _offerController,
-                          decoration: const InputDecoration(
-                            labelText: 'Paste Offer Here',
-                            border: OutlineInputBorder(),
-                          ),
-                          maxLines: 3,
                         ),
                         const SizedBox(height: 8),
-                        ElevatedButton(
-                          onPressed: _isLoading ? null : _joinWithOffer,
-                          child: const Text('Join with Offer'),
+                        Text(
+                          'A Strategic Number Game',
+                          style: TextStyle(
+                            fontSize: isSmallScreen ? 12 : 14,
+                            color: Colors.grey[400],
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
                       ],
                     ),
+                  ),
+                  SizedBox(height: isSmallScreen ? 24 : 32),
+                  // Local Play Button
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.cyan.withValues(alpha: 0.3),
+                          Colors.blue.withValues(alpha: 0.2),
+                        ],
+                      ),
+                      border: Border.all(
+                        color: Colors.cyan.withValues(alpha: 0.5),
+                        width: 2,
+                      ),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => _startGame(),
+                        borderRadius: BorderRadius.circular(16),
+                        child: Padding(
+                          padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.videogame_asset,
+                                size: isSmallScreen ? 32 : 40,
+                                color: Colors.cyan[300],
+                              ),
+                              SizedBox(height: isSmallScreen ? 8 : 12),
+                              Text(
+                                'Local Play',
+                                style: TextStyle(
+                                  fontSize: isSmallScreen ? 16 : 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(height: isSmallScreen ? 4 : 8),
+                              Text(
+                                'Play against the computer',
+                                style: TextStyle(
+                                  fontSize: isSmallScreen ? 11 : 12,
+                                  color: Colors.grey[400],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: isSmallScreen ? 20 : 32),
+                  Container(
+                    height: 1,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          Colors.purple.withValues(alpha: 0.3),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: isSmallScreen ? 20 : 32),
+                  // Network Play Header
+                  Column(
+                    children: [
+                      Text(
+                        'Network Play (WebRTC)',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: isSmallScreen ? 16 : 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: isSmallScreen ? 4 : 8),
+                      Text(
+                        'Play with friends on any platform!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: isSmallScreen ? 11 : 12,
+                          color: Colors.amber[300],
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: isSmallScreen ? 16 : 24),
+                  // Host Game Card
+                  _buildNetworkCard(
+                    icon: Icons.share,
+                    title: 'Host a Game',
+                    description:
+                        '1. Click "Create Offer"\n'
+                        '2. Share with another player\n'
+                        '3. Paste their answer to connect',
+                    buttonLabel: _isLoading ? 'Creating...' : 'Create Offer',
+                    onPressed: _isLoading ? null : _createOffer,
+                    isSmallScreen: isSmallScreen,
+                    accentColor: Colors.red,
+                  ),
+                  SizedBox(height: isSmallScreen ? 12 : 16),
+                  // Join Game Card
+                  _buildNetworkCardWithInput(isSmallScreen: isSmallScreen),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNetworkCard({
+    required IconData icon,
+    required String title,
+    required String description,
+    required String buttonLabel,
+    required VoidCallback? onPressed,
+    required bool isSmallScreen,
+    required Color accentColor,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            accentColor.withValues(alpha: 0.15),
+            accentColor.withValues(alpha: 0.05),
+          ],
+        ),
+        border: Border.all(color: accentColor.withValues(alpha: 0.3), width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: accentColor.withValues(alpha: 0.2),
+            blurRadius: 12,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Icon(icon, color: accentColor, size: isSmallScreen ? 24 : 28),
+                SizedBox(width: isSmallScreen ? 8 : 12),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: isSmallScreen ? 14 : 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
               ],
             ),
+            SizedBox(height: isSmallScreen ? 8 : 12),
+            Text(
+              description,
+              style: TextStyle(
+                fontSize: isSmallScreen ? 11 : 12,
+                color: Colors.grey[400],
+              ),
+            ),
+            SizedBox(height: isSmallScreen ? 8 : 12),
+            ElevatedButton.icon(
+              onPressed: onPressed,
+              icon: const Icon(Icons.send, size: 18),
+              label: Text(buttonLabel),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: accentColor.withValues(alpha: 0.7),
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(
+                  vertical: isSmallScreen ? 10 : 12,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNetworkCardWithInput({required bool isSmallScreen}) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.orange.withValues(alpha: 0.15),
+            Colors.orange.withValues(alpha: 0.05),
+          ],
+        ),
+        border: Border.all(
+          color: Colors.orange.withValues(alpha: 0.3),
+          width: 2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.orange.withValues(alpha: 0.2),
+            blurRadius: 12,
+            spreadRadius: 2,
           ),
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.login,
+                  color: Colors.orange,
+                  size: isSmallScreen ? 24 : 28,
+                ),
+                SizedBox(width: isSmallScreen ? 8 : 12),
+                Text(
+                  'Join a Game',
+                  style: TextStyle(
+                    fontSize: isSmallScreen ? 14 : 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: isSmallScreen ? 8 : 12),
+            Text(
+              '1. Paste the offer from host\n'
+              '2. Click "Join with Offer"\n'
+              '3. Share the answer back',
+              style: TextStyle(
+                fontSize: isSmallScreen ? 11 : 12,
+                color: Colors.grey[400],
+              ),
+            ),
+            SizedBox(height: isSmallScreen ? 8 : 12),
+            TextField(
+              controller: _offerController,
+              decoration: InputDecoration(
+                labelText: 'Paste Offer Here',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                contentPadding: EdgeInsets.all(isSmallScreen ? 8 : 12),
+              ),
+              maxLines: 3,
+              style: TextStyle(fontSize: isSmallScreen ? 11 : 12),
+            ),
+            SizedBox(height: isSmallScreen ? 8 : 12),
+            ElevatedButton.icon(
+              onPressed: _isLoading ? null : _joinWithOffer,
+              icon: const Icon(Icons.login, size: 18),
+              label: Text(_isLoading ? 'Joining...' : 'Join with Offer'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange.withValues(alpha: 0.7),
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(
+                  vertical: isSmallScreen ? 10 : 12,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
