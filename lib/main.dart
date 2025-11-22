@@ -19,10 +19,10 @@ class BlackHoleApp extends StatelessWidget {
       title: 'Black Hole',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
+          seedColor: Colors.blueGrey,
           brightness: Brightness.dark,
         ),
-        useMaterial3: true,
+        useMaterial3: false,
         scaffoldBackgroundColor: const Color(0xFF121212),
       ),
       home: const MenuScreen(),
@@ -147,40 +147,10 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final isSmallScreen = screenSize.width < 500;
-    final isMediumScreen = screenSize.width < 800;
-
-    double spotSize = 45.0;
-
-    if (isSmallScreen) {
-      spotSize = 35.0;
-    } else if (isMediumScreen) {
-      spotSize = 40.0;
-    }
-
     double verticalPadding = 32;
     double horizontalPadding = 16;
 
-    if (isSmallScreen) {
-      verticalPadding = 16;
-      horizontalPadding = 8;
-    }
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Black Hole'),
-        elevation: 4,
-        centerTitle: true,
-        actions: [
-          if (!_isRemoteGame)
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: _startNewGame,
-              tooltip: 'New Game',
-            ),
-        ],
-      ),
       body: Stack(
         children: [
           Container(
@@ -208,7 +178,7 @@ class _GameScreenState extends State<GameScreen> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(2),
                             color: _localPlayer == Player.red
                                 ? Colors.red.withValues(alpha: 0.2)
                                 : Colors.blue.withValues(alpha: 0.2),
@@ -222,7 +192,7 @@ class _GameScreenState extends State<GameScreen> {
                             'You are ${_localPlayer?.name.toUpperCase()}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: isSmallScreen ? 14 : 18,
+                              fontSize: 18,
                               color: _localPlayer == Player.red
                                   ? Colors.red[300]
                                   : Colors.blue[300],
@@ -231,19 +201,17 @@ class _GameScreenState extends State<GameScreen> {
                         ),
                         SizedBox(height: verticalPadding),
                       ],
-                      _buildStatusDisplay(isSmallScreen),
+                      _buildStatusDisplay(),
                       SizedBox(height: verticalPadding),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: BoardWidget(
                           board: _engine.board,
                           onSpotTap: _handleSpotTap,
-                          spotSize: spotSize,
                         ),
                       ),
                       SizedBox(height: verticalPadding),
-                      if (_engine.isGameOver)
-                        _buildGameOverDisplay(isSmallScreen),
+                      if (_engine.isGameOver) _buildGameOverDisplay(),
                     ],
                   ),
                 ),
@@ -286,7 +254,7 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  Widget _buildStatusDisplay(bool isSmallScreen) {
+  Widget _buildStatusDisplay() {
     if (_engine.isGameOver) return const SizedBox.shrink();
 
     final playerColor = _engine.currentPlayer == Player.red
@@ -305,52 +273,38 @@ class _GameScreenState extends State<GameScreen> {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.grey[850]!.withValues(alpha: 0.8),
-            Colors.grey[900]!.withValues(alpha: 0.9),
-          ],
-        ),
+        borderRadius: BorderRadius.circular(2),
         border: Border.all(color: playerColor.withValues(alpha: 0.4), width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: playerColor.withValues(alpha: 0.3),
-            blurRadius: 15,
-            spreadRadius: 3,
-          ),
-        ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(isSmallScreen ? 12.0 : 16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
             Text(
               statusText,
               style: TextStyle(
-                fontSize: isSmallScreen ? 12 : 14,
+                fontSize: 14,
                 color: Colors.grey[400],
                 fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: isSmallScreen ? 6 : 8),
+            SizedBox(height: 12),
             Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   _engine.currentPlayer.name.toUpperCase(),
                   style: TextStyle(
                     color: playerColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: isSmallScreen ? 18 : 24,
+                    fontSize: 24,
                   ),
                 ),
-                SizedBox(width: isSmallScreen ? 12 : 16),
+                SizedBox(width: 16),
                 PieceWidget(
                   piece: Piece(owner: _engine.currentPlayer, value: nextVal!),
-                  size: isSmallScreen ? 30 : 40,
+                  size: 40,
                 ),
               ],
             ),
@@ -360,7 +314,7 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  Widget _buildGameOverDisplay(bool isSmallScreen) {
+  Widget _buildGameOverDisplay() {
     final scores = _engine.calculateScores();
     final winner = _engine.getWinner();
 
@@ -379,7 +333,7 @@ class _GameScreenState extends State<GameScreen> {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(2),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -389,41 +343,34 @@ class _GameScreenState extends State<GameScreen> {
           ],
         ),
         border: Border.all(color: resultColor.withValues(alpha: 0.5), width: 3),
-        boxShadow: [
-          BoxShadow(
-            color: resultColor.withValues(alpha: 0.4),
-            blurRadius: 20,
-            spreadRadius: 5,
-          ),
-        ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(isSmallScreen ? 16.0 : 24.0),
+        padding: EdgeInsets.all(24.0),
         child: Column(
           children: [
             Text(
               'GAME OVER',
               style: TextStyle(
-                fontSize: isSmallScreen ? 22 : 28,
+                fontSize: 28,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
                 letterSpacing: 1.5,
               ),
             ),
-            SizedBox(height: isSmallScreen ? 12 : 16),
+            SizedBox(height: 16),
             Text(
               resultText,
               style: TextStyle(
-                fontSize: isSmallScreen ? 18 : 24,
+                fontSize: 24,
                 color: resultColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: isSmallScreen ? 12 : 16),
+            SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(2),
                 color: Colors.black.withValues(alpha: 0.3),
               ),
               child: Column(
@@ -432,27 +379,22 @@ class _GameScreenState extends State<GameScreen> {
                     'Red',
                     scores[Player.red] ?? 0,
                     const Color(0xFFFF5252),
-                    isSmallScreen,
                   ),
-                  SizedBox(height: isSmallScreen ? 6 : 8),
+                  SizedBox(height: 12),
                   _buildScoreRow(
                     'Blue',
                     scores[Player.blue] ?? 0,
                     const Color(0xFF42A5F5),
-                    isSmallScreen,
                   ),
                 ],
               ),
             ),
-            SizedBox(height: isSmallScreen ? 8 : 12),
+            SizedBox(height: 12),
             Text(
               '(Lowest score wins)',
-              style: TextStyle(
-                fontSize: isSmallScreen ? 11 : 13,
-                color: Colors.grey[500],
-              ),
+              style: TextStyle(fontSize: 13, color: Colors.grey[500]),
             ),
-            SizedBox(height: isSmallScreen ? 16 : 24),
+            SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: () {
                 if (_isRemoteGame) {
@@ -464,10 +406,7 @@ class _GameScreenState extends State<GameScreen> {
               icon: Icon(_isRemoteGame ? Icons.exit_to_app : Icons.refresh),
               label: Text(_isRemoteGame ? 'Back to Menu' : 'Play Again'),
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(
-                  horizontal: isSmallScreen ? 24 : 32,
-                  vertical: isSmallScreen ? 12 : 16,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                 backgroundColor: resultColor.withValues(alpha: 0.8),
                 foregroundColor: Colors.white,
               ),
@@ -478,12 +417,7 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  Widget _buildScoreRow(
-    String player,
-    int score,
-    Color color,
-    bool isSmallScreen,
-  ) {
+  Widget _buildScoreRow(String player, int score, Color color) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -501,18 +435,15 @@ class _GameScreenState extends State<GameScreen> {
               style: TextStyle(
                 color: color,
                 fontWeight: FontWeight.bold,
-                fontSize: isSmallScreen ? 14 : 16,
+                fontSize: 16,
               ),
             ),
           ),
         ),
-        SizedBox(width: isSmallScreen ? 8 : 12),
+        SizedBox(width: 12),
         Text(
           '$player Score',
-          style: TextStyle(
-            fontSize: isSmallScreen ? 13 : 15,
-            color: Colors.grey[300],
-          ),
+          style: TextStyle(fontSize: 15, color: Colors.grey[300]),
         ),
       ],
     );

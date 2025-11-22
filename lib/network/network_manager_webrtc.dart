@@ -90,8 +90,8 @@ class NetworkManagerImplementation implements NetworkManagerInterface {
     );
     _setupDataChannel(_dataChannel!);
 
-    final offer = await _peerConnection!.createOffer();
-    await _peerConnection!.setLocalDescription(offer);
+    final sessionInfo = await _peerConnection!.createOffer();
+    await _peerConnection!.setLocalDescription(sessionInfo);
 
     await _waitForIceGathering();
 
@@ -100,11 +100,14 @@ class NetworkManagerImplementation implements NetworkManagerInterface {
   }
 
   @override
-  Future<String> createAnswer(String offer) async {
+  Future<String> createAnswer(String code) async {
     await _initializePeerConnection();
 
-    final offerMap = jsonDecode(offer);
-    final remoteDesc = RTCSessionDescription(offerMap['sdp'], offerMap['type']);
+    final rtcSessionPayload = jsonDecode(code);
+    final remoteDesc = RTCSessionDescription(
+      rtcSessionPayload['sdp'],
+      rtcSessionPayload['type'],
+    );
     await _peerConnection!.setRemoteDescription(remoteDesc);
 
     final answer = await _peerConnection!.createAnswer();

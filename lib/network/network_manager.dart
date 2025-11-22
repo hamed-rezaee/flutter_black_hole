@@ -11,7 +11,7 @@ class NetworkManager implements NetworkManagerInterface {
   Future<String> createOffer() => _impl.createOffer();
 
   @override
-  Future<String> createAnswer(String offer) => _impl.createAnswer(offer);
+  Future<String> createAnswer(String code) => _impl.createAnswer(code);
 
   @override
   Future<void> completeConnection(String answer) =>

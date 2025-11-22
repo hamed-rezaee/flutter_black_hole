@@ -38,7 +38,7 @@ class _MenuScreenState extends State<MenuScreen> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Error creating offer: $e')));
+        ).showSnackBar(SnackBar(content: Text('Error creating game: $e')));
         setState(() => _isLoading = false);
       }
     }
@@ -51,14 +51,14 @@ class _MenuScreenState extends State<MenuScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('Share This Offer'),
+        title: const Text('Share This Game'),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Text(
-                'Copy this offer and send it to the other player:',
+                'Copy this code and send it to the other player:',
                 style: TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 12),
@@ -66,7 +66,7 @@ class _MenuScreenState extends State<MenuScreen> {
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: Colors.grey[900],
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(2),
                 ),
                 child: SelectableText(
                   offer,
@@ -79,11 +79,14 @@ class _MenuScreenState extends State<MenuScreen> {
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: offer));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Offer copied to clipboard')),
+                    const SnackBar(content: Text('Code copied to clipboard')),
                   );
                 },
                 icon: const Icon(Icons.copy),
-                label: const Text('Copy Offer'),
+                label: const Text('Copy Code'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
               ),
               const SizedBox(height: 24),
               const Divider(),
@@ -95,11 +98,13 @@ class _MenuScreenState extends State<MenuScreen> {
               const SizedBox(height: 8),
               TextField(
                 controller: answerController,
-                decoration: const InputDecoration(
-                  labelText: 'Answer',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: 'Paste code here',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-                maxLines: 3,
+                maxLines: 1,
               ),
             ],
           ),
@@ -180,7 +185,7 @@ class _MenuScreenState extends State<MenuScreen> {
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: Colors.grey[900],
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(2),
                 ),
                 child: SelectableText(
                   answer,
@@ -222,24 +227,9 @@ class _MenuScreenState extends State<MenuScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final isSmallScreen = screenSize.width < 500;
-    final isMediumScreen = screenSize.width < 800;
-
     double maxWidth = 500;
-    if (isMediumScreen) {
-      maxWidth = 400;
-    }
-    if (isSmallScreen) {
-      maxWidth = double.infinity;
-    }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Black Hole'),
-        elevation: 4,
-        centerTitle: true,
-      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -253,7 +243,7 @@ class _MenuScreenState extends State<MenuScreen> {
         ),
         child: Center(
           child: SingleChildScrollView(
-            padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
+            padding: EdgeInsets.all(16),
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: maxWidth),
               child: Column(
@@ -264,7 +254,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(2),
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -280,16 +270,10 @@ class _MenuScreenState extends State<MenuScreen> {
                     ),
                     child: Column(
                       children: [
-                        Icon(
-                          Icons.dark_mode,
-                          size: isSmallScreen ? 48 : 64,
-                          color: Colors.purple[300],
-                        ),
-                        const SizedBox(height: 12),
                         Text(
                           'Black Hole',
                           style: TextStyle(
-                            fontSize: isSmallScreen ? 28 : 36,
+                            fontSize: 36,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                             letterSpacing: 1.5,
@@ -299,7 +283,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         Text(
                           'A Strategic Number Game',
                           style: TextStyle(
-                            fontSize: isSmallScreen ? 12 : 14,
+                            fontSize: 14,
                             color: Colors.grey[400],
                             fontStyle: FontStyle.italic,
                           ),
@@ -307,62 +291,25 @@ class _MenuScreenState extends State<MenuScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(height: isSmallScreen ? 24 : 32),
+                  SizedBox(height: 32),
                   // Local Play Button
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.cyan.withValues(alpha: 0.3),
-                          Colors.blue.withValues(alpha: 0.2),
-                        ],
-                      ),
-                      border: Border.all(
-                        color: Colors.cyan.withValues(alpha: 0.5),
-                        width: 2,
-                      ),
+                  TextButton(
+                    onPressed: _startGame,
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.green.withValues(alpha: 0.7),
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () => _startGame(),
-                        borderRadius: BorderRadius.circular(16),
-                        child: Padding(
-                          padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.videogame_asset,
-                                size: isSmallScreen ? 32 : 40,
-                                color: Colors.cyan[300],
-                              ),
-                              SizedBox(height: isSmallScreen ? 8 : 12),
-                              Text(
-                                'Local Play',
-                                style: TextStyle(
-                                  fontSize: isSmallScreen ? 16 : 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(height: isSmallScreen ? 4 : 8),
-                              Text(
-                                'Play against the computer',
-                                style: TextStyle(
-                                  fontSize: isSmallScreen ? 11 : 12,
-                                  color: Colors.grey[400],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                    child: Text(
+                      'Start Local Game',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  SizedBox(height: isSmallScreen ? 20 : 32),
+                  SizedBox(height: 24),
                   Container(
                     height: 1,
                     decoration: BoxDecoration(
@@ -375,48 +322,35 @@ class _MenuScreenState extends State<MenuScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: isSmallScreen ? 20 : 32),
-                  // Network Play Header
+                  SizedBox(height: 24),
                   Column(
                     children: [
                       Text(
-                        'Network Play (WebRTC)',
+                        'Network Play',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: isSmallScreen ? 16 : 20,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
-                      SizedBox(height: isSmallScreen ? 4 : 8),
-                      Text(
-                        'Play with friends on any platform!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: isSmallScreen ? 11 : 12,
-                          color: Colors.amber[300],
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
                     ],
                   ),
-                  SizedBox(height: isSmallScreen ? 16 : 24),
+                  SizedBox(height: 24),
                   // Host Game Card
                   _buildNetworkCard(
-                    icon: Icons.share,
                     title: 'Host a Game',
                     description:
-                        '1. Click "Create Offer"\n'
+                        '1. Click "Create Game"\n'
                         '2. Share with another player\n'
                         '3. Paste their answer to connect',
-                    buttonLabel: _isLoading ? 'Creating...' : 'Create Offer',
+                    buttonLabel: _isLoading ? 'Creating...' : 'Create',
                     onPressed: _isLoading ? null : _createOffer,
-                    isSmallScreen: isSmallScreen,
                     accentColor: Colors.red,
                   ),
-                  SizedBox(height: isSmallScreen ? 12 : 16),
+                  SizedBox(height: 24),
                   // Join Game Card
-                  _buildNetworkCardWithInput(isSmallScreen: isSmallScreen),
+                  _buildNetworkCardWithInput(),
                 ],
               ),
             ),
@@ -427,17 +361,15 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   Widget _buildNetworkCard({
-    required IconData icon,
     required String title,
     required String description,
     required String buttonLabel,
     required VoidCallback? onPressed,
-    required bool isSmallScreen,
     required Color accentColor,
   }) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(2),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -456,44 +388,32 @@ class _MenuScreenState extends State<MenuScreen> {
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                Icon(icon, color: accentColor, size: isSmallScreen ? 24 : 28),
-                SizedBox(width: isSmallScreen ? 8 : 12),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: isSmallScreen ? 14 : 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: isSmallScreen ? 8 : 12),
             Text(
-              description,
+              title,
               style: TextStyle(
-                fontSize: isSmallScreen ? 11 : 12,
-                color: Colors.grey[400],
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
-            SizedBox(height: isSmallScreen ? 8 : 12),
-            ElevatedButton.icon(
+            SizedBox(height: 12),
+            Text(
+              description,
+              style: TextStyle(fontSize: 12, color: Colors.grey[400]),
+            ),
+            SizedBox(height: 12),
+            ElevatedButton(
               onPressed: onPressed,
-              icon: const Icon(Icons.send, size: 18),
-              label: Text(buttonLabel),
               style: ElevatedButton.styleFrom(
                 backgroundColor: accentColor.withValues(alpha: 0.7),
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(
-                  vertical: isSmallScreen ? 10 : 12,
-                ),
+                padding: EdgeInsets.symmetric(vertical: 16),
               ),
+              child: Text(buttonLabel),
             ),
           ],
         ),
@@ -501,10 +421,10 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  Widget _buildNetworkCardWithInput({required bool isSmallScreen}) {
+  Widget _buildNetworkCardWithInput() {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(2),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -526,63 +446,45 @@ class _MenuScreenState extends State<MenuScreen> {
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.login,
-                  color: Colors.orange,
-                  size: isSmallScreen ? 24 : 28,
-                ),
-                SizedBox(width: isSmallScreen ? 8 : 12),
-                Text(
-                  'Join a Game',
-                  style: TextStyle(
-                    fontSize: isSmallScreen ? 14 : 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: isSmallScreen ? 8 : 12),
             Text(
-              '1. Paste the offer from host\n'
-              '2. Click "Join with Offer"\n'
-              '3. Share the answer back',
+              'Join a Game',
               style: TextStyle(
-                fontSize: isSmallScreen ? 11 : 12,
-                color: Colors.grey[400],
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
-            SizedBox(height: isSmallScreen ? 8 : 12),
+            SizedBox(height: 8),
+            Text(
+              '1. Paste the code from host\n'
+              '2. Click "Join with Code"\n'
+              '3. Share the answer back',
+              style: TextStyle(fontSize: 11, color: Colors.grey[400]),
+            ),
+            SizedBox(height: 8),
             TextField(
               controller: _offerController,
               decoration: InputDecoration(
-                labelText: 'Paste Offer Here',
+                labelText: 'Paste Code Here',
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                contentPadding: EdgeInsets.all(isSmallScreen ? 8 : 12),
               ),
-              maxLines: 3,
-              style: TextStyle(fontSize: isSmallScreen ? 11 : 12),
+              maxLines: 1,
             ),
-            SizedBox(height: isSmallScreen ? 8 : 12),
-            ElevatedButton.icon(
+            SizedBox(height: 8),
+            TextButton(
               onPressed: _isLoading ? null : _joinWithOffer,
-              icon: const Icon(Icons.login, size: 18),
-              label: Text(_isLoading ? 'Joining...' : 'Join with Offer'),
-              style: ElevatedButton.styleFrom(
+              style: TextButton.styleFrom(
                 backgroundColor: Colors.orange.withValues(alpha: 0.7),
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(
-                  vertical: isSmallScreen ? 10 : 12,
-                ),
+                padding: EdgeInsets.symmetric(vertical: 16),
               ),
+              child: Text(_isLoading ? 'Joining...' : 'Join'),
             ),
           ],
         ),

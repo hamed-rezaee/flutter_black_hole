@@ -24,43 +24,12 @@ class _BoardWidgetState extends State<BoardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final isSmallScreen = screenSize.width < 500;
-    final isMediumScreen = screenSize.width < 800;
-
     double adaptiveSpotSize = widget.spotSize;
-    if (isSmallScreen) {
-      adaptiveSpotSize = widget.spotSize * 0.75;
-    } else if (isMediumScreen) {
-      adaptiveSpotSize = widget.spotSize * 0.9;
-    }
 
     final spacing = adaptiveSpotSize * 0.15;
 
     return Container(
       padding: EdgeInsets.all(spacing * 2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.grey[900]!.withValues(alpha: 0.6),
-            Colors.grey[800]!.withValues(alpha: 0.4),
-          ],
-        ),
-        border: Border.all(
-          color: Colors.purple.withValues(alpha: 0.3),
-          width: 2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.purple.withValues(alpha: 0.2),
-            blurRadius: 15,
-            spreadRadius: 5,
-          ),
-        ],
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: List.generate(6, (row) {

@@ -5,7 +5,7 @@ abstract class NetworkManagerInterface {
 
   Future<String> createOffer();
 
-  Future<String> createAnswer(String offer);
+  Future<String> createAnswer(String code);
 
   Future<void> completeConnection(String answer);
 
