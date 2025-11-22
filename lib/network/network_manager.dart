@@ -1,6 +1,5 @@
 import 'network_manager_interface.dart';
-import 'network_manager_io.dart'
-    if (dart.library.html) 'network_manager_web.dart';
+import 'network_manager_webrtc.dart';
 
 class NetworkManager implements NetworkManagerInterface {
   final NetworkManagerImplementation _impl = NetworkManagerImplementation();
@@ -9,13 +8,14 @@ class NetworkManager implements NetworkManagerInterface {
   Stream<Map<String, dynamic>> get messageStream => _impl.messageStream;
 
   @override
-  Future<String> getIpAddress() => _impl.getIpAddress();
+  Future<String> createOffer() => _impl.createOffer();
 
   @override
-  Future<void> hostGame() => _impl.hostGame();
+  Future<String> createAnswer(String offer) => _impl.createAnswer(offer);
 
   @override
-  Future<void> joinGame(String ip) => _impl.joinGame(ip);
+  Future<void> completeConnection(String answer) =>
+      _impl.completeConnection(answer);
 
   @override
   void send(Map<String, dynamic> data) => _impl.send(data);

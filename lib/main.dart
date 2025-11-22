@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'game_engine.dart';
 import 'models.dart';
 import 'widgets/board_widget.dart';
@@ -44,9 +43,8 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   late GameEngine _engine;
   bool _isRemoteGame = false;
-  Player? _localPlayer; // Null for local play (both), otherwise assigned
+  Player? _localPlayer;
   bool _waitingForOpponent = false;
-  String? _hostIp;
 
   @override
   void initState() {
@@ -54,13 +52,8 @@ class _GameScreenState extends State<GameScreen> {
     _isRemoteGame = widget.networkManager != null;
 
     if (_isRemoteGame) {
-      // Host is Red, Client is Blue (default, confirmed by handshake)
       _localPlayer = widget.isHost ? Player.red : Player.blue;
-      _waitingForOpponent = widget.isHost; // Host waits for connection
-
-      if (widget.isHost) {
-        _fetchHostIp();
-      }
+      _waitingForOpponent = true;
 
       widget.networkManager!.messageStream.listen(_handleNetworkMessage);
     }
@@ -68,38 +61,31 @@ class _GameScreenState extends State<GameScreen> {
     _startNewGame();
   }
 
-  Future<void> _fetchHostIp() async {
-    final ip = await widget.networkManager!.getIpAddress();
-    if (mounted) {
-      setState(() {
-        _hostIp = ip;
-      });
-    }
-  }
-
   void _handleNetworkMessage(Map<String, dynamic> message) {
     if (!mounted) return;
 
+    debugPrint('Received network message: $message');
+
     switch (message['type']) {
       case 'HANDSHAKE':
-        // Client receives this
-        setState(() {
-          // If we are client, we are blue. Host is red.
-        });
+        debugPrint('Handshake received');
+        setState(() {});
         break;
       case 'MOVE':
         final row = message['row'] as int;
         final col = message['col'] as int;
+        debugPrint('Move received: row=$row, col=$col');
         setState(() {
           _engine.placePiece(row, col);
-          _waitingForOpponent =
-              false; // Opponent moved, now my turn (if logic holds)
+          _waitingForOpponent = false;
         });
         break;
       case 'DISCONNECT':
+        debugPrint('Disconnect received');
         _showDisconnectDialog();
         break;
       case 'CONNECTED':
+        debugPrint('Connection established!');
         setState(() => _waitingForOpponent = false);
         break;
     }
@@ -134,9 +120,8 @@ class _GameScreenState extends State<GameScreen> {
     if (_engine.isGameOver) return;
     if (_waitingForOpponent) return;
 
-    // Network checks
     if (_isRemoteGame) {
-      if (_engine.currentPlayer != _localPlayer) return; // Not my turn
+      if (_engine.currentPlayer != _localPlayer) return;
     }
 
     try {
@@ -224,33 +209,14 @@ class _GameScreenState extends State<GameScreen> {
                 const CircularProgressIndicator(),
                 const SizedBox(height: 24),
                 const Text(
-                  'Waiting for Opponent...',
+                  'Waiting for Connection...',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                if (_hostIp != null) ...[
-                  const SizedBox(height: 16),
-                  const Text('Share this IP address:'),
-                  const SizedBox(height: 8),
-                  SelectableText(
-                    _hostIp!,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepPurpleAccent,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: _hostIp!));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('IP copied to clipboard')),
-                      );
-                    },
-                    icon: const Icon(Icons.copy),
-                    label: const Text('Copy IP'),
-                  ),
-                ],
+                const SizedBox(height: 8),
+                const Text(
+                  'Establishing WebRTC connection',
+                  style: TextStyle(fontSize: 14),
+                ),
               ],
             ),
           ),
@@ -353,7 +319,7 @@ class _GameScreenState extends State<GameScreen> {
             ElevatedButton.icon(
               onPressed: () {
                 if (_isRemoteGame) {
-                  Navigator.of(context).pop(); // Back to menu
+                  Navigator.of(context).pop();
                 } else {
                   _startNewGame();
                 }

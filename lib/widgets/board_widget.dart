@@ -16,10 +16,6 @@ class BoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // We need to render 6 rows.
-    // Row 0 has 1 item, Row 1 has 2 items, etc.
-    // We will center each row.
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(6, (row) {
@@ -37,7 +33,7 @@ class BoardWidget extends StatelessWidget {
                   height: spotSize,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.grey[800], // Dark background for empty spots
+                    color: Colors.grey[800],
                     border: Border.all(color: Colors.grey[600]!),
                     boxShadow: [
                       BoxShadow(

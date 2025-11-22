@@ -16,17 +16,6 @@ class Piece {
 }
 
 class Board {
-  // Using axial coordinates for the triangular grid.
-  // A triangular board of side 6 has 21 cells.
-  // We can map this to a hex grid subset.
-  // Let's use a simple list representation for now, or a map of coordinates.
-  // A triangle with 6 rows:
-  // Row 0: 1 cell
-  // Row 1: 2 cells
-  // ...
-  // Row 5: 6 cells
-  // Total: 1+2+3+4+5+6 = 21 cells.
-
   final Map<(int, int), Piece?> grid;
 
   Board() : grid = _createInitialGrid();
@@ -35,7 +24,6 @@ class Board {
     final map = <(int, int), Piece?>{};
     for (int row = 0; row < 6; row++) {
       for (int col = 0; col <= row; col++) {
-        // (row, col) works as a coordinate system for a "flat-topped" triangle
         map[(row, col)] = null;
       }
     }
@@ -61,11 +49,6 @@ class Board {
   }
 
   List<(int, int)> getNeighbors(int row, int col) {
-    // Neighbors in this specific triangular grid layout (row, col):
-    // (r-1, c-1), (r-1, c)   [Top-Left, Top-Right]
-    // (r, c-1),   (r, c+1)   [Left, Right]
-    // (r+1, c),   (r+1, c+1) [Bottom-Left, Bottom-Right]
-
     final potentialNeighbors = [
       (row - 1, col - 1),
       (row - 1, col),
