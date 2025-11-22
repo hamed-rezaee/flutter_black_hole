@@ -5,6 +5,7 @@ import 'widgets/board_widget.dart';
 import 'widgets/piece_widget.dart';
 import 'network/network_manager.dart';
 import 'screens/menu_screen.dart';
+import 'ai_engine.dart';
 
 void main() {
   runApp(const BlackHoleApp());
@@ -33,8 +34,14 @@ class BlackHoleApp extends StatelessWidget {
 class GameScreen extends StatefulWidget {
   final NetworkManager? networkManager;
   final bool isHost;
+  final bool playAgainstAI;
 
-  const GameScreen({super.key, this.networkManager, this.isHost = false});
+  const GameScreen({
+    super.key,
+    this.networkManager,
+    this.isHost = false,
+    this.playAgainstAI = false,
+  });
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -43,19 +50,24 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   late GameEngine _engine;
   bool _isRemoteGame = false;
+  bool _isAIGame = false;
   Player? _localPlayer;
   bool _waitingForOpponent = false;
+  bool _aiIsThinking = false;
 
   @override
   void initState() {
     super.initState();
     _isRemoteGame = widget.networkManager != null;
+    _isAIGame = widget.playAgainstAI;
 
     if (_isRemoteGame) {
       _localPlayer = widget.isHost ? Player.red : Player.blue;
       _waitingForOpponent = true;
 
       widget.networkManager!.messageStream.listen(_handleNetworkMessage);
+    } else if (_isAIGame) {
+      _localPlayer = Player.red;
     }
 
     _startNewGame();
@@ -119,8 +131,11 @@ class _GameScreenState extends State<GameScreen> {
   void _handleSpotTap(int row, int col) {
     if (_engine.isGameOver) return;
     if (_waitingForOpponent) return;
+    if (_aiIsThinking) return;
 
     if (_isRemoteGame) {
+      if (_engine.currentPlayer != _localPlayer) return;
+    } else if (_isAIGame) {
       if (_engine.currentPlayer != _localPlayer) return;
     }
 
@@ -131,12 +146,37 @@ class _GameScreenState extends State<GameScreen> {
 
       if (_isRemoteGame) {
         widget.networkManager!.send({'type': 'MOVE', 'row': row, 'col': col});
+      } else if (_isAIGame) {
+        _triggerAIMove();
       }
     } catch (e) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(e.toString())));
     }
+  }
+
+  void _triggerAIMove() {
+    setState(() => _aiIsThinking = true);
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (!mounted) return;
+
+      try {
+        final aiMove = AIEngine.getBestMove(_engine);
+        if (aiMove != null) {
+          setState(() {
+            _engine.placePiece(aiMove.$1, aiMove.$2);
+            _aiIsThinking = false;
+          });
+        } else {
+          setState(() => _aiIsThinking = false);
+        }
+      } catch (e) {
+        debugPrint('AI move error: $e');
+        setState(() => _aiIsThinking = false);
+      }
+    });
   }
 
   @override
@@ -269,6 +309,12 @@ class _GameScreenState extends State<GameScreen> {
       } else {
         statusText = "Opponent's Turn";
       }
+    } else if (_isAIGame) {
+      if (_engine.currentPlayer == _localPlayer) {
+        statusText = 'Your Turn';
+      } else {
+        statusText = _aiIsThinking ? 'AI is Thinking...' : "AI's Turn";
+      }
     }
 
     return Container(
@@ -397,14 +443,18 @@ class _GameScreenState extends State<GameScreen> {
             SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: () {
-                if (_isRemoteGame) {
+                if (_isRemoteGame || _isAIGame) {
                   Navigator.of(context).pop();
                 } else {
                   _startNewGame();
                 }
               },
-              icon: Icon(_isRemoteGame ? Icons.exit_to_app : Icons.refresh),
-              label: Text(_isRemoteGame ? 'Back to Menu' : 'Play Again'),
+              icon: Icon(
+                _isRemoteGame || _isAIGame ? Icons.exit_to_app : Icons.refresh,
+              ),
+              label: Text(
+                _isRemoteGame || _isAIGame ? 'Back to Menu' : 'Play Again',
+              ),
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                 backgroundColor: resultColor.withValues(alpha: 0.8),

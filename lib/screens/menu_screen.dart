@@ -23,6 +23,14 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
+  void _startAIGame() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const GameScreen(playAgainstAI: true),
+      ),
+    );
+  }
+
   Future<void> _createOffer() async {
     setState(() => _isLoading = true);
     final manager = NetworkManager();
@@ -250,7 +258,6 @@ class _MenuScreenState extends State<MenuScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Title with icon
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -292,7 +299,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     ),
                   ),
                   SizedBox(height: 32),
-                  // Local Play Button
+
                   TextButton(
                     onPressed: _startGame,
                     style: TextButton.styleFrom(
@@ -302,6 +309,24 @@ class _MenuScreenState extends State<MenuScreen> {
                     ),
                     child: Text(
                       'Start Local Game',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+
+                  TextButton(
+                    onPressed: _startAIGame,
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.cyan.withValues(alpha: 0.7),
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: Text(
+                      'Play vs AI',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.white,
@@ -337,7 +362,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     ],
                   ),
                   SizedBox(height: 24),
-                  // Host Game Card
+
                   _buildNetworkCard(
                     title: 'Host a Game',
                     description:
@@ -349,7 +374,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     accentColor: Colors.red,
                   ),
                   SizedBox(height: 24),
-                  // Join Game Card
+
                   _buildNetworkCardWithInput(),
                 ],
               ),
