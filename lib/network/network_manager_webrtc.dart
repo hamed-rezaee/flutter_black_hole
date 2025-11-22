@@ -96,14 +96,16 @@ class NetworkManagerImplementation implements NetworkManagerInterface {
     await _waitForIceGathering();
 
     final localDesc = await _peerConnection!.getLocalDescription();
-    return jsonEncode(localDesc!.toMap());
+    final jsonString = jsonEncode(localDesc!.toMap());
+    return base64Encode(utf8.encode(jsonString));
   }
 
   @override
   Future<String> createAnswer(String code) async {
     await _initializePeerConnection();
 
-    final rtcSessionPayload = jsonDecode(code);
+    final jsonString = utf8.decode(base64Decode(code));
+    final rtcSessionPayload = jsonDecode(jsonString);
     final remoteDesc = RTCSessionDescription(
       rtcSessionPayload['sdp'],
       rtcSessionPayload['type'],
@@ -116,12 +118,14 @@ class NetworkManagerImplementation implements NetworkManagerInterface {
     await _waitForIceGathering();
 
     final localDesc = await _peerConnection!.getLocalDescription();
-    return jsonEncode(localDesc!.toMap());
+    final answerJsonString = jsonEncode(localDesc!.toMap());
+    return base64Encode(utf8.encode(answerJsonString));
   }
 
   @override
   Future<void> completeConnection(String answer) async {
-    final answerMap = jsonDecode(answer);
+    final jsonString = utf8.decode(base64Decode(answer));
+    final answerMap = jsonDecode(jsonString);
     final remoteDesc = RTCSessionDescription(
       answerMap['sdp'],
       answerMap['type'],
