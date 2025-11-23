@@ -11,7 +11,7 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  final TextEditingController _offerController = TextEditingController();
+  final TextEditingController _codeController = TextEditingController();
   bool _isLoading = false;
 
   void _startGame({NetworkManager? networkManager, bool isHost = false}) {
@@ -31,16 +31,16 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  Future<void> _createOffer() async {
+  Future<void> _createCode() async {
     setState(() => _isLoading = true);
     final manager = NetworkManager();
     try {
-      final offer = await manager.createOffer();
+      final code = await manager.createCode();
 
       if (mounted) {
         setState(() => _isLoading = false);
 
-        _showOfferDialog(offer, manager);
+        _showCodeDialog(code, manager);
       }
     } catch (e) {
       if (mounted) {
@@ -52,7 +52,7 @@ class _MenuScreenState extends State<MenuScreen> {
     }
   }
 
-  void _showOfferDialog(String offer, NetworkManager manager) {
+  void _showCodeDialog(String code, NetworkManager manager) {
     final answerController = TextEditingController();
 
     showDialog(
@@ -77,7 +77,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   borderRadius: BorderRadius.circular(2),
                 ),
                 child: SelectableText(
-                  offer,
+                  code,
                   style: const TextStyle(fontSize: 10, fontFamily: 'monospace'),
                   maxLines: 5,
                 ),
@@ -85,7 +85,7 @@ class _MenuScreenState extends State<MenuScreen> {
               const SizedBox(height: 8),
               ElevatedButton.icon(
                 onPressed: () {
-                  Clipboard.setData(ClipboardData(text: offer));
+                  Clipboard.setData(ClipboardData(text: code));
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Code copied to clipboard')),
                   );
@@ -149,14 +149,14 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  Future<void> _joinWithOffer() async {
-    final offer = _offerController.text.trim();
-    if (offer.isEmpty) return;
+  Future<void> _joinWithCode() async {
+    final code = _codeController.text.trim();
+    if (code.isEmpty) return;
 
     setState(() => _isLoading = true);
     final manager = NetworkManager();
     try {
-      final answer = await manager.createAnswer(offer);
+      final answer = await manager.createAnswer(code);
 
       if (mounted) {
         setState(() => _isLoading = false);
@@ -370,7 +370,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         '2. Share with another player\n'
                         '3. Paste their answer to connect',
                     buttonLabel: _isLoading ? 'Creating...' : 'Create',
-                    onPressed: _isLoading ? null : _createOffer,
+                    onPressed: _isLoading ? null : _createCode,
                     accentColor: Colors.red,
                   ),
                   SizedBox(height: 24),
@@ -492,7 +492,7 @@ class _MenuScreenState extends State<MenuScreen> {
             ),
             SizedBox(height: 8),
             TextField(
-              controller: _offerController,
+              controller: _codeController,
               decoration: InputDecoration(
                 labelText: 'Paste Code Here',
                 border: OutlineInputBorder(
@@ -503,7 +503,7 @@ class _MenuScreenState extends State<MenuScreen> {
             ),
             SizedBox(height: 8),
             TextButton(
-              onPressed: _isLoading ? null : _joinWithOffer,
+              onPressed: _isLoading ? null : _joinWithCode,
               style: TextButton.styleFrom(
                 backgroundColor: Colors.orange.withValues(alpha: 0.7),
                 foregroundColor: Colors.white,

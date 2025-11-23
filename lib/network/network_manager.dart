@@ -8,7 +8,7 @@ class NetworkManager implements NetworkManagerInterface {
   Stream<Map<String, dynamic>> get messageStream => _impl.messageStream;
 
   @override
-  Future<String> createOffer() => _impl.createOffer();
+  Future<String> createCode() => _impl.createCode();
 
   @override
   Future<String> createAnswer(String code) => _impl.createAnswer(code);

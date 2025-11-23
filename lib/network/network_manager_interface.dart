@@ -3,7 +3,7 @@ import 'dart:async';
 abstract class NetworkManagerInterface {
   Stream<Map<String, dynamic>> get messageStream;
 
-  Future<String> createOffer();
+  Future<String> createCode();
 
   Future<String> createAnswer(String code);
 

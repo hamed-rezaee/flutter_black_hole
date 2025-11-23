@@ -80,7 +80,7 @@ class NetworkManagerImplementation implements NetworkManagerInterface {
   }
 
   @override
-  Future<String> createOffer() async {
+  Future<String> createCode() async {
     await _initializePeerConnection();
 
     final dataChannelInit = RTCDataChannelInit();
